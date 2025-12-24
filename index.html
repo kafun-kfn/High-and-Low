@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>High & Low</title>
+<style>
+  body {
+    font-family: sans-serif;
+    text-align: center;
+    padding: 20px;
+  }
+  button {
+    font-size: 18px;
+    margin: 10px;
+    padding: 10px 20px;
+  }
+</style>
+</head>
+<body>
+
+<h1>High & Low</h1>
+<div id="log"></div>
+
+<button onclick="play(1)">勝負</button>
+<button onclick="play(0)">パス</button>
+
+<script>
+let round = 1;
+let score = 0;
+
+let userCards = [
+  rand(), rand(), rand()
+];
+let npcCards = [
+  rand(), rand(), rand()
+];
+
+show(`『ルール説明』<br>
+ランダムに数字が出ます。<br>
+相手と対戦し、大きい方が勝ち。<br>
+数字は1〜100。<br><br>
+>>>> 一戦目 <<<<<br>
+あなたのカードは『${userCards[0]}』`);
+
+function rand() {
+  return Math.floor(Math.random() * 100) + 1;
+}
+
+function show(text) {
+  document.getElementById("log").innerHTML = text;
+}
+
+function play(choice) {
+  if (round > 3) return;
+
+  let user = userCards[round - 1];
+  let npc = npcCards[round - 1];
+  let msg = "";
+
+  if (choice === 1) {
+    if (user > npc) {
+      msg = `あなたの勝ち！ あなた:${user} 相手:${npc}`;
+      score++;
+    } else if (user === npc) {
+      msg = `引き分け。 あなた:${user} 相手:${npc}`;
+    } else {
+      msg = `お前の負け。ざーこざーこw お前:${user} 相手:${npc}`;
+      score--;
+    }
+  } else {
+    msg = `パスしました。 お前:${user} 相手:${npc}`;
+    if (npc > user) score++;
+    else if (npc < user) score--;
+  }
+
+  round++;
+
+  if (round <= 3) {
+    msg += `<br><br>>>> ${["一","二","三"][round-1]}戦目 <<<<<br>
+            あなたのカードは『${userCards[round-1]}』`;
+  } else {
+    msg += `<br><br><b>総合結果</b><br>`;
+    if (score > 0) msg += "あなたの勝ちです :(";
+    else if (score === 0) msg += "引き分けです。";
+    else msg += "お前の負けだ。:)";
+  }
+
+  show(msg);
+}
+</script>
+
+</body>
+</html>
